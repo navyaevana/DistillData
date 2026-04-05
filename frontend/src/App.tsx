@@ -302,7 +302,9 @@ function App() {
                 {activeTab === 'analysis' && renderAnalysis(viewingData.analysisResults)}
                 {activeTab === 'cleaning' && (
                   <div className="cleaning-options-panel">
-                    <h3>🧹 Choose Your Cleaning Options</h3>
+                    <h3>🧹 Advanced Data Cleaning Options</h3>
+                    <p className="cleaning-description">Automatically identifies and handles missing values with intelligent imputation and removes duplicates</p>
+                    
                     <div className="options-group">
                       <label className="checkbox-label">
                         <input 
@@ -310,9 +312,9 @@ function App() {
                           checked={cleaningOptions.removeNulls}
                           onChange={(e) => setCleaningOptions({...cleaningOptions, removeNulls: e.target.checked})}
                         />
-                        <span>Remove Null/Empty Rows</span>
+                        <span>Handle Missing Values (Imputation)</span>
                       </label>
-                      <p className="option-description">Remove rows that are completely empty or contain only null values</p>
+                      <p className="option-description">✓ Mean imputation for numeric columns (e.g., age, salary, price)<br/>✓ Mode (most frequent) imputation for categorical columns (e.g., city, category)</p>
                     </div>
 
                     <div className="options-group">
@@ -324,7 +326,7 @@ function App() {
                         />
                         <span>Remove Duplicate Rows</span>
                       </label>
-                      <p className="option-description">Remove rows that have identical data in all columns</p>
+                      <p className="option-description">Removes rows that are completely identical across all columns</p>
                     </div>
 
                     <div className="options-group">
@@ -346,9 +348,9 @@ function App() {
                           checked={cleaningOptions.removeEmptyRows}
                           onChange={(e) => setCleaningOptions({...cleaningOptions, removeEmptyRows: e.target.checked})}
                         />
-                        <span>Remove Empty Rows</span>
+                        <span>Remove Completely Empty Rows</span>
                       </label>
-                      <p className="option-description">Remove rows with all empty cells</p>
+                      <p className="option-description">Removes rows with all empty cells</p>
                     </div>
 
                     <button 
@@ -356,7 +358,7 @@ function App() {
                       disabled={isCleaning}
                       className="btn-primary btn-large"
                     >
-                      {isCleaning ? '⏳ Cleaning...' : '✓ Apply Cleaning'}
+                      {isCleaning ? '⏳ Cleaning...' : '✓ Apply Advanced Cleaning'}
                     </button>
                   </div>
                 )}

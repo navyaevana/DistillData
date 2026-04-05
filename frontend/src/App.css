@@ -535,7 +535,18 @@ button:disabled {
   color: #333;
   font-size: 18px;
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+.cleaning-description {
+  color: #667eea;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 20px 0;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-left: 4px solid #667eea;
+  border-radius: 8px;
 }
 
 .options-group {
