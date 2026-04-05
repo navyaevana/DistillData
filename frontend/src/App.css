@@ -4,9 +4,9 @@
   max-width: 1300px;
   margin: 0 auto;
   padding: 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
   min-height: 100vh;
-  animation: fadeInApp 0.5s ease-in;
+  animation: fadeInApp 0.8s ease-in;
   position: relative;
 }
 
@@ -37,14 +37,31 @@
 header {
   text-align: center;
   margin-bottom: 50px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 60px 30px;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4), 0 0 40px rgba(118, 75, 162, 0.2);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  padding: 80px 40px;
+  border-radius: 25px;
+  box-shadow: 0 25px 80px rgba(102, 126, 234, 0.6), 0 0 60px rgba(240, 147, 251, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   color: white;
-  animation: slideDown 0.6s ease-out;
+  animation: slideDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes slideDown {
@@ -59,30 +76,66 @@ header {
 }
 
 header h1 {
-  font-size: 48px;
+  font-size: 56px;
   margin: 0;
-  font-weight: 700;
-  letter-spacing: -1px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-weight: 800;
+  letter-spacing: -2px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 30px rgba(240, 147, 251, 0.4);
+  position: relative;
+  z-index: 1;
+  animation: textSlideDown 0.8s ease-out;
+}
+
+@keyframes textSlideDown {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 header p {
   font-size: 18px;
-  margin: 15px 0 0 0;
+  margin: 20px 0 0 0;
   opacity: 0.95;
   font-weight: 300;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
 /* Upload Section */
 .upload-section {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  padding: 45px;
+  border-radius: 20px;
   margin-bottom: 50px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-  border: 2px solid transparent;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(102, 126, 234, 0.3);
   transition: all 0.3s ease;
-  animation: slideUp 0.7s ease-out;
+  animation: slideUp 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(240, 147, 251, 0.05) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.upload-section:hover {
+  box-shadow: 0 20px 70px rgba(102, 126, 234, 0.4), 0 0 30px rgba(240, 147, 251, 0.2);
+  border-color: rgba(102, 126, 234, 0.5);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.25) 100%);
 }
 
 .upload-section:hover {
@@ -91,9 +144,11 @@ header p {
 
 .upload-section h2 {
   margin-top: 0;
-  color: #333;
+  color: #fff;
   font-size: 28px;
   margin-bottom: 25px;
+  position: relative;
+  z-index: 1;
 }
 
 .upload-controls {
@@ -122,19 +177,19 @@ header p {
 }
 
 button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 14px 35px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 20px rgba(240, 147, 251, 0.2);
   position: relative;
   overflow: hidden;
-  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes popIn {
@@ -158,8 +213,9 @@ button::before {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.2);
-  transition: left 0.3s ease;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  transition: left 0.4s ease;
+  transform: skewX(-20deg);
 }
 
 button:hover::before {
@@ -167,8 +223,8 @@ button:hover::before {
 }
 
 button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 20px rgba(102, 126, 234, 0.3);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6), 0 0 40px rgba(240, 147, 251, 0.3);
 }
 
 button:active {
@@ -199,9 +255,11 @@ button:disabled {
 }
 
 .datasets-section h2 {
-  font-size: 28px;
-  color: #333;
-  margin-bottom: 30px;
+  font-size: 32px;
+  color: #fff;
+  margin-bottom: 40px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  font-weight: 700;
 }
 
 .datasets-list {
@@ -212,15 +270,40 @@ button:disabled {
 
 .dataset-card {
   border: none;
-  border-radius: 16px;
-  padding: 25px;
-  background: white;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: 2px solid transparent;
+  border-radius: 18px;
+  padding: 30px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2px solid rgba(102, 126, 234, 0.2);
   position: relative;
   overflow: hidden;
-  animation: scaleIn 0.5s ease-out;
+  animation: scaleIn 0.6s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+.dataset-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  transform: scaleX(0);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: left;
+}
+
+.dataset-card:hover::before {
+  transform: scaleX(1);
+}
+
+.dataset-card:hover {
+  box-shadow: 0 25px 70px rgba(102, 126, 234, 0.5), 0 0 50px rgba(240, 147, 251, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-12px) scale(1.02);
+  border-color: rgba(102, 126, 234, 0.5);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(102, 126, 234, 0.15) 100%);
 }
 
 @keyframes scaleIn {
@@ -276,9 +359,10 @@ button:disabled {
 
 .dataset-card h3 {
   margin-top: 0;
-  color: #333;
-  font-size: 20px;
-  font-weight: 600;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .card-info {
@@ -287,24 +371,27 @@ button:disabled {
 
 .dataset-card p {
   margin: 10px 0;
-  color: #666;
+  color: #ccc;
   font-size: 14px;
   line-height: 1.6;
 }
 
 .dataset-card small {
-  color: #999;
+  color: #aaa;
   font-size: 12px;
 }
 
 .status-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
+  padding: 6px 16px;
+  border-radius: 25px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4), 0 0 10px rgba(240, 147, 251, 0.2);
+  animation: float 3s ease-in-out infinite;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .actions {
@@ -352,16 +439,17 @@ button:disabled {
 }
 
 .modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 20px;
-  max-width: 600px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 250, 0.98) 100%);
+  padding: 40px;
+  border-radius: 25px;
+  max-width: 700px;
   max-height: 80vh;
   overflow-y: auto;
   width: 90%;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s ease;
-  border: 1px solid rgba(102, 126, 234, 0.1);
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5), 0 0 60px rgba(102, 126, 234, 0.2);
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  backdrop-filter: blur(20px);
 }
 
 @keyframes slideUp {
@@ -443,13 +531,14 @@ button:disabled {
 }
 
 .tab-content {
-  max-height: 400px;
+  max-height: 500px;
   overflow-y: auto;
   margin: 15px 0;
-  padding: 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #f0f4ff 100%);
-  border-radius: 12px;
-  border: 1px solid #e0e5ff;
+  padding: 25px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  border-radius: 15px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  animation: fadeInUp 0.5s ease-out 0.1s both;
 }
 /* Data Table Styling */
 .data-table-container {
@@ -462,9 +551,10 @@ button:disabled {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
-  background: white;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 245, 255, 0.9) 100%);
   border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .data-table tr {
@@ -495,16 +585,19 @@ button:disabled {
 }
 
 .data-table tr:nth-child(1) {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   color: white;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .data-table tr:nth-child(odd) {
-  background: #f9feff;
+  background: #f5f8ff;
 }
 
 .data-table tr:hover {
-  background: #f0f4ff;
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, rgba(240, 147, 251, 0.05) 100%);
+  box-shadow: inset 0 0 15px rgba(102, 126, 234, 0.1);
 }
 
 /* Analysis Styling */
