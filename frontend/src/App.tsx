@@ -280,7 +280,7 @@ function App() {
                   className={`tab-button ${activeTab === 'cleaned' ? 'active' : ''}`}
                   onClick={() => setActiveTab('cleaned')}
                 >
-                  ✨ Cleaned Data ({viewingData.cleanedRowCount} rows)
+                  ✨ Cleaned Data ({cleaningResult ? cleaningResult.cleanedRowCount : viewingData.cleanedRowCount} rows)
                 </button>
                 <button 
                   className={`tab-button ${activeTab === 'analysis' ? 'active' : ''}`}
@@ -298,8 +298,8 @@ function App() {
 
               <div className="tab-content">
                 {activeTab === 'original' && renderDataTable(viewingData.originalData)}
-                {activeTab === 'cleaned' && renderDataTable(viewingData.cleanedData)}
-                {activeTab === 'analysis' && renderAnalysis(viewingData.analysisResults)}
+                {activeTab === 'cleaned' && renderDataTable(cleaningResult ? cleaningResult.cleanedData : viewingData.cleanedData)}
+                {activeTab === 'analysis' && renderAnalysis(cleaningResult ? cleaningResult.analysisResults : viewingData.analysisResults)}
                 {activeTab === 'cleaning' && (
                   <div className="cleaning-options-panel">
                     <h3>🧹 Advanced Data Cleaning Options</h3>
