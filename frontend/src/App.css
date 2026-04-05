@@ -7,6 +7,21 @@
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
   animation: fadeInApp 0.5s ease-in;
+  position: relative;
+}
+
+.app::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  animation: none;
+  z-index: -1;
 }
 
 @keyframes fadeInApp {
@@ -25,9 +40,11 @@ header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 60px 30px;
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4), 0 0 40px rgba(118, 75, 162, 0.2);
   color: white;
   animation: slideDown 0.6s ease-out;
+  position: relative;
+  overflow: hidden;
 }
 
 @keyframes slideDown {
@@ -95,11 +112,13 @@ header p {
   font-size: 15px;
   cursor: pointer;
   transition: all 0.3s ease;
+  background: white;
 }
 
 .upload-controls input[type="file"]:hover {
   border-color: #667eea;
-  background: #f9feff;
+  background: linear-gradient(135deg, #f5f7fa 0%, #f0f4ff 100%);
+  box-shadow: 0 0 10px rgba(102, 126, 234, 0.1);
 }
 
 button {
@@ -149,7 +168,7 @@ button:hover::before {
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 20px rgba(102, 126, 234, 0.3);
 }
 
 button:active {
@@ -235,6 +254,24 @@ button:disabled {
 
 .dataset-card:hover::before {
   transform: scaleX(1);
+}
+
+.dataset-card:hover::after {
+  opacity: 1;
+}
+
+.dataset-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  border-radius: 16px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .dataset-card h3 {
@@ -324,6 +361,7 @@ button:disabled {
   width: 90%;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease;
+  border: 1px solid rgba(102, 126, 234, 0.1);
 }
 
 @keyframes slideUp {
@@ -401,6 +439,7 @@ button:disabled {
   border-bottom: 3px solid #667eea;
   color: #667eea;
   background: none;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
 }
 
 .tab-content {
@@ -677,6 +716,206 @@ button:disabled {
   accent-color: #667eea;
 }
 
+/* Enhanced Animations & Effects */
+
+/* Pulse Animation */
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+  }
+}
+
+/* Glow Effect */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.5), 0 0 10px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.8), 0 0 25px rgba(102, 126, 234, 0.5);
+  }
+}
+
+/* Shimmer Loading Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Rainbow Border Animation */
+@keyframes rainbowBorder {
+  0% {
+    border-color: #667eea;
+  }
+  50% {
+    border-color: #764ba2;
+  }
+  100% {
+    border-color: #667eea;
+  }
+}
+
+/* Success Checkmark Animation */
+@keyframes checkmark {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(0deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Apply glow effect to primary buttons on hover */
+button.btn-primary:hover {
+  animation: glow 1s ease-in-out infinite;
+}
+
+/* Apply bounce to success results */
+.result-item.success {
+  animation: bounce 0.6s ease-in-out;
+}
+
+/* Floating effect for status badges */
+.status-badge {
+  animation: float 2s ease-in-out infinite;
+}
+
+/* Enhanced upload section glow */
+.upload-section:hover {
+  box-shadow: 0 15px 50px rgba(102, 126, 234, 0.15), 0 0 20px rgba(102, 126, 234, 0.1);
+}
+
+/* Enhanced file input visual feedback */
+.upload-controls input[type="file"]:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: linear-gradient(135deg, #f5f7fa 0%, #f0f4ff 100%);
+}
+
+/* Active state animation for modals */
+.modal.active {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Smooth data table row highlighting */
+.data-table tbody tr:hover {
+  background: linear-gradient(90deg, #f0f4ff 0%, #f5f7fa 100%);
+  box-shadow: inset 0 0 10px rgba(102, 126, 234, 0.1);
+}
+
+/* Card reflection effect on hover */
+.dataset-card::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  transition: all 0.3s ease;
+}
+
+.dataset-card:hover::before {
+  top: 0;
+  animation: slideDown 0.5s ease-out;
+}
+
+/* Improved checkbox styling with animation */
+.options-group:hover {
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+  transform: translateX(3px);
+  transition: all 0.3s ease;
+}
+
+/* Tab highlight animation */
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 24px;
+  right: 24px;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  animation: slideRight 0.3s ease-out;
+}
+
+/* Result item success animation */
+.result-item.success {
+  border-color: #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(102, 126, 234, 0.3);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Text gradient animation */
+@keyframes textGradient {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 100% center;
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textGradient 2s linear infinite;
+}
+
 .option-description {
   margin: 8px 0 0 30px;
   font-size: 13px;
@@ -712,11 +951,28 @@ button:disabled {
   text-align: center;
   border: 2px solid #e0e0e0;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(102, 126, 234, 0.1) 50%, transparent 100%);
+  transition: left 0.3s ease;
 }
 
 .result-item:hover {
   border-color: #667eea;
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.result-item:hover::after {
+  left: 100%;
 }
 
 .result-label {
