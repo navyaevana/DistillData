@@ -6,6 +6,16 @@
   padding: 20px;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
+  animation: fadeInApp 0.5s ease-in;
+}
+
+@keyframes fadeInApp {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Header Styling */
@@ -17,6 +27,18 @@ header {
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
   color: white;
+  animation: slideDown 0.6s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 header h1 {
@@ -43,6 +65,7 @@ header p {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   border: 2px solid transparent;
   transition: all 0.3s ease;
+  animation: slideUp 0.7s ease-out;
 }
 
 .upload-section:hover {
@@ -79,7 +102,6 @@ header p {
   background: #f9feff;
 }
 
-/* Button Styling */
 button {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -93,6 +115,21 @@ button {
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
   position: relative;
   overflow: hidden;
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 button::before {
@@ -128,6 +165,18 @@ button:disabled {
 /* Dataset Section */
 .datasets-section {
   margin-top: 50px;
+  animation: fadeInUp 0.7s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .datasets-section h2 {
@@ -148,10 +197,22 @@ button:disabled {
   padding: 25px;
   background: white;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   border: 2px solid transparent;
   position: relative;
   overflow: hidden;
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .dataset-card::before {
@@ -312,7 +373,24 @@ button:disabled {
   font-weight: 500;
   transition: all 0.3s ease;
   white-space: nowrap;
+  animation: slideRight 0.5s ease-out backwards;
 }
+
+@keyframes slideRight {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.tab-button:nth-child(1) { animation-delay: 0.1s; }
+.tab-button:nth-child(2) { animation-delay: 0.2s; }
+.tab-button:nth-child(3) { animation-delay: 0.3s; }
+.tab-button:nth-child(4) { animation-delay: 0.4s; }
 
 .tab-button:hover {
   background: none;
@@ -352,6 +430,18 @@ button:disabled {
 
 .data-table tr {
   border-bottom: 1px solid #e0e0e0;
+  animation: fadeInRow 0.5s ease-out;
+}
+
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .data-table tr:last-child {
@@ -411,6 +501,18 @@ button:disabled {
   border-left: 4px solid #667eea;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .column-info:hover {

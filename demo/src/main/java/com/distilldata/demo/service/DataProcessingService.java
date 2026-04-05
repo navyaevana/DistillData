@@ -179,24 +179,67 @@ public class DataProcessingService {
     private List<String[]> cleanData(List<String[]> data) {
         if (data.isEmpty()) return data;
 
-        // Remove rows with all null/empty values
+        // Step 1: Remove completely empty rows
         data = data.stream()
                 .filter(row -> Arrays.stream(row).anyMatch(cell -> cell != null && !cell.trim().isEmpty()))
                 .collect(Collectors.toList());
 
-        // Remove duplicate rows (more robust comparison)
+        // Step 2: Normalize null patterns
+        data = normalizeNullPatterns(data);
+
+        // Step 3: Remove duplicate rows
         Set<String> seen = new HashSet<>();
         data = data.stream()
                 .filter(row -> {
-                    // Create a normalized string representation for comparison
                     String rowStr = Arrays.stream(row)
-                            .map(cell -> cell == null ? "" : cell.trim())
+                            .map(cell -> cell == null ? "NULL" : cell.trim().toUpperCase())
                             .collect(Collectors.joining("|"));
                     return seen.add(rowStr);
                 })
                 .collect(Collectors.toList());
 
+        // Step 4: Remove completely empty columns
+        data = removeEmptyColumns(data);
+
         return data;
+    }
+
+    private List<String[]> removeEmptyColumns(List<String[]> data) {
+        if (data.isEmpty()) return data;
+
+        int columnCount = data.get(0).length;
+        List<Integer> validColumns = new ArrayList<>();
+
+        // Find columns that have at least one non-empty value
+        for (int col = 0; col < columnCount; col++) {
+            boolean hasValue = false;
+            for (int row = 0; row < data.size(); row++) {
+                String[] rowData = data.get(row);
+                if (col < rowData.length && rowData[col] != null && !rowData[col].trim().isEmpty()) {
+                    hasValue = true;
+                    break;
+                }
+            }
+            if (hasValue) {
+                validColumns.add(col);
+            }
+        }
+
+        // If all columns are valid, return as is
+        if (validColumns.size() == columnCount) {
+            return data;
+        }
+
+        // Keep only valid columns
+        return data.stream()
+                .map(row -> {
+                    List<String> newRow = new ArrayList<>();
+                    for (int col : validColumns) {
+                        newRow.add(col < row.length ? row[col] : "");
+                    }
+                    return newRow.toArray(new String[0]);
+                })
+                .collect(Collectors.toList());
     }
 
     private String analyzeData(List<String[]> data) {
@@ -310,7 +353,10 @@ public class DataProcessingService {
         List<String[]> result = new ArrayList<>(data);
         String[] headers = result.isEmpty() ? new String[0] : result.get(0);
 
-        // Step 1: Apply trim whitespace
+        // Step 1: Normalize null patterns (convert null-like values to empty)
+        result = normalizeNullPatterns(result);
+
+        // Step 2: Apply trim whitespace
         if (options.isTrimWhitespace()) {
             result = result.stream()
                     .map(row -> Arrays.stream(row)
@@ -319,12 +365,26 @@ public class DataProcessingService {
                     .collect(Collectors.toList());
         }
 
-        // Step 2: Normalize common null patterns
-        result = normalizeNullPatterns(result);
-
-        // Step 3: Handle missing values (Mean, Median, Mode imputation)
+        // Step 3: Remove rows with ANY null values (fill with imputation if enabled)
         if (options.isRemoveNulls()) {
+            // First count nulls for statistics
+            long beforeImpute = result.size();
             result = imputeMissingValues(result, stats);
+            stats.nullRowsRemoved += (beforeImpute - result.size());
+        } else {
+            // Just remove completely empty rows
+            long beforeSize = result.size();
+            List<String[]> nonEmptyRows = new ArrayList<>();
+            nonEmptyRows.add(headers); // Keep header
+            for (int i = 1; i < result.size(); i++) {
+                String[] row = result.get(i);
+                boolean hasValue = Arrays.stream(row).anyMatch(cell -> cell != null && !cell.isEmpty());
+                if (hasValue) {
+                    nonEmptyRows.add(row);
+                }
+            }
+            stats.nullRowsRemoved += (beforeSize - nonEmptyRows.size());
+            result = nonEmptyRows;
         }
 
         // Step 4: Remove completely empty rows
@@ -336,7 +396,8 @@ public class DataProcessingService {
                     nonEmptyRows.add(result.get(i)); // Keep header
                 } else {
                     String[] row = result.get(i);
-                    if (Arrays.stream(row).anyMatch(cell -> cell != null && !cell.isEmpty() && !cell.equals("N/A"))) {
+                    boolean hasValue = Arrays.stream(row).anyMatch(cell -> cell != null && !cell.isEmpty());
+                    if (hasValue) {
                         nonEmptyRows.add(row);
                     }
                 }
@@ -345,7 +406,7 @@ public class DataProcessingService {
             result = nonEmptyRows;
         }
 
-        // Step 5: Remove duplicate rows (excluding header)
+        // Step 5: Remove duplicate rows
         if (options.isRemoveDuplicates()) {
             long beforeSize = result.size();
             List<String[]> uniqueRows = new ArrayList<>();
@@ -358,18 +419,21 @@ public class DataProcessingService {
                     continue;
                 }
                 
-                // Create normalized string for duplicate detection
+                // Create normalized string for duplicate detection (case-insensitive)
                 String rowStr = Arrays.stream(row)
                         .map(cell -> cell == null ? "NULL" : cell.trim().toUpperCase())
                         .collect(Collectors.joining("|"));
                 
                 if (seen.add(rowStr)) {
                     uniqueRows.add(row);
-                }
+                } 
             }
             stats.duplicatesRemoved = beforeSize - uniqueRows.size();
             result = uniqueRows;
         }
+
+        // Step 6: Remove empty columns
+        result = removeEmptyColumns(result);
 
         return result;
     }
