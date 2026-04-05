@@ -319,26 +319,33 @@ public class DataProcessingService {
                     .collect(Collectors.toList());
         }
 
-        // Step 2: Handle missing values (Mean, Median, Mode imputation)
+        // Step 2: Normalize common null patterns
+        result = normalizeNullPatterns(result);
+
+        // Step 3: Handle missing values (Mean, Median, Mode imputation)
         if (options.isRemoveNulls()) {
             result = imputeMissingValues(result, stats);
         }
 
-        // Step 3: Remove completely empty rows
+        // Step 4: Remove completely empty rows
         if (options.isRemoveEmptyRows()) {
             long beforeSize = result.size();
-            result = result.stream()
-                    .skip(1) // Skip header
-                    .filter(row -> Arrays.stream(row).anyMatch(cell -> cell != null && !cell.isEmpty()))
-                    .collect(Collectors.toList());
-            // Add header back
-            if (!result.isEmpty()) {
-                result.add(0, headers);
+            List<String[]> nonEmptyRows = new ArrayList<>();
+            for (int i = 0; i < result.size(); i++) {
+                if (i == 0) {
+                    nonEmptyRows.add(result.get(i)); // Keep header
+                } else {
+                    String[] row = result.get(i);
+                    if (Arrays.stream(row).anyMatch(cell -> cell != null && !cell.isEmpty() && !cell.equals("N/A"))) {
+                        nonEmptyRows.add(row);
+                    }
+                }
             }
-            stats.nullRowsRemoved += (beforeSize - result.size() - 1);
+            stats.nullRowsRemoved += (beforeSize - nonEmptyRows.size());
+            result = nonEmptyRows;
         }
 
-        // Step 4: Remove duplicate rows (excluding header)
+        // Step 5: Remove duplicate rows (excluding header)
         if (options.isRemoveDuplicates()) {
             long beforeSize = result.size();
             List<String[]> uniqueRows = new ArrayList<>();
@@ -353,18 +360,42 @@ public class DataProcessingService {
                 
                 // Create normalized string for duplicate detection
                 String rowStr = Arrays.stream(row)
-                        .map(cell -> cell == null ? "NULL" : cell.trim())
+                        .map(cell -> cell == null ? "NULL" : cell.trim().toUpperCase())
                         .collect(Collectors.joining("|"));
                 
                 if (seen.add(rowStr)) {
                     uniqueRows.add(row);
                 }
             }
+            stats.duplicatesRemoved = beforeSize - uniqueRows.size();
             result = uniqueRows;
-            stats.duplicatesRemoved = beforeSize - result.size();
         }
 
         return result;
+    }
+
+    private List<String[]> normalizeNullPatterns(List<String[]> data) {
+        return data.stream()
+                .map(row -> Arrays.stream(row)
+                        .map(cell -> {
+                            if (cell == null) return "";
+                            String normalized = cell.trim();
+                            // Replace common null patterns with empty string
+                            if (normalized.isEmpty() || 
+                                normalized.equalsIgnoreCase("null") || 
+                                normalized.equalsIgnoreCase("n/a") ||
+                                normalized.equalsIgnoreCase("na") ||
+                                normalized.equalsIgnoreCase("none") ||
+                                normalized.equalsIgnoreCase("unknown") ||
+                                normalized.equals("-") ||
+                                normalized.equals("--") ||
+                                normalized.equals("---")) {
+                                return "";
+                            }
+                            return normalized;
+                        })
+                        .toArray(String[]::new))
+                .collect(Collectors.toList());
     }
 
     private List<String[]> imputeMissingValues(List<String[]> data, CleaningStats stats) {
@@ -392,16 +423,19 @@ public class DataProcessingService {
             for (int col = 0; col < columnCount; col++) {
                 String value = col < row.length ? row[col] : "";
                 
-                // Check if value is missing
+                // Check if value is missing or empty
                 if (value == null || value.trim().isEmpty()) {
                     ColumnStats colStats = columnStats.get(col);
                     
-                    if (colStats.isNumeric) {
+                    if (colStats.isNumeric && !colStats.meanValue.equals("0")) {
                         // Use Mean imputation for numeric columns
                         imputedRow[col] = colStats.meanValue;
-                    } else {
+                    } else if (!colStats.isNumeric && !colStats.modeValue.isEmpty()) {
                         // Use Mode imputation for categorical columns
-                        imputedRow[col] = colStats.modeValue.isEmpty() ? "Unknown" : colStats.modeValue;
+                        imputedRow[col] = colStats.modeValue;
+                    } else {
+                        // Default value
+                        imputedRow[col] = "N/A";
                     }
                     stats.nullRowsRemoved++;
                 } else {
@@ -418,6 +452,8 @@ public class DataProcessingService {
         ColumnStats stats = new ColumnStats();
         List<Double> numericValues = new ArrayList<>();
         Map<String, Integer> categoricalFrequency = new HashMap<>();
+        int totalNonEmpty = 0;
+        int totalNumeric = 0;
 
         // Collect non-null values
         for (int i = 1; i < data.size(); i++) {
@@ -425,17 +461,25 @@ public class DataProcessingService {
             String value = (columnIndex < row.length && row[columnIndex] != null) ? row[columnIndex].trim() : "";
 
             if (!value.isEmpty()) {
+                totalNonEmpty++;
                 // Try to parse as numeric
                 try {
                     double numVal = Double.parseDouble(value);
                     numericValues.add(numVal);
-                    stats.isNumeric = true;
+                    totalNumeric++;
                 } catch (NumberFormatException e) {
-                    stats.isNumeric = false;
                     // Track frequency for mode calculation
                     categoricalFrequency.put(value, categoricalFrequency.getOrDefault(value, 0) + 1);
                 }
             }
+        }
+
+        // Determine if column is numeric or categorical
+        // If more than 70% of values are numeric, treat as numeric
+        if (totalNonEmpty > 0 && totalNumeric >= (totalNonEmpty * 0.7)) {
+            stats.isNumeric = true;
+        } else {
+            stats.isNumeric = false;
         }
 
         // Calculate mean for numeric columns
@@ -452,7 +496,7 @@ public class DataProcessingService {
             stats.modeValue = categoricalFrequency.entrySet().stream()
                     .max(Comparator.comparingInt(Map.Entry::getValue))
                     .map(Map.Entry::getKey)
-                    .orElse("Unknown");
+                    .orElse("");
         }
 
         return stats;
